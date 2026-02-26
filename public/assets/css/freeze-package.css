@@ -1,0 +1,29 @@
+.freeze-row {
+    border: 1px solid #C1C1C1;
+    border-radius: 5px;
+    padding: 20px 0px;
+}
+
+.card-freeze-package {
+    border: 1px solid #E7E7E7;
+    border-radius: 10px;
+    padding: 20px 10px 0px 10px;
+}
+
+.card-freeze-package-discount {
+    border: 1px solid #E7E7E7;
+    border-radius: 10px;
+}
+
+.card-freeze-package-total {
+    background-color: #F8F8F8;
+    border-radius: 10px;
+}
+
+
+.btn-see-affected-package {
+    background-color: #4c3d3d;
+    color: #ffffff;
+    border-radius: 24px;
+    padding: 5px 20px;
+}
