@@ -53,7 +53,6 @@ class PurchaseRepositories
 
             $detail = [];
             $total = 0;
-            $stock = [];
             foreach ($request->items as $data) {
                 $total += $data['price'];
             }
@@ -72,6 +71,7 @@ class PurchaseRepositories
                     'purchase_id' => $insert->id,
                     'item_variant_id' => $data['variant_id'],
                     'qty' => $data['qty'],
+                    'price' => $data['price'],
                     'created_at' => Carbon::now(),
                 ];
             }

@@ -12,6 +12,7 @@ class PurchaseDetailModel extends Model
         'purchase_id',
         'item_variant_id',
         'qty',
+        'price',
         'created_at',
     ];
 

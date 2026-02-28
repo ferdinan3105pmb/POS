@@ -11,23 +11,28 @@
 @section('content')
 <section class="section dashboard">
     <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-xxl-12 col-md-12">
-                    <div class="card info-card sales-card d-flex flex-row" style="height:60px">
-                        <a href="" style="margin-left:15px; margin-top:15px">
-                            <i style="font-size:20px;" class="bi bi-search"></i>
-                        </a>
-                        <input id="name" onkeyup="getData()" style="border-color: white;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;" type="text" class="form-control mt-2" placeholder="Search by name..." value="">
-                    </div>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <a href="{{ route('admin_data_monthly_sales_report') }}">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Monthly Sales</h5>
+                                <p class="card-text">Report of total monthly sales</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </div>
 
-            <div class="data" id="data">
-                <div class="d-flex justify-content-center">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
+                <div class="col-md-6">
+                    <a href="{{ route('admin_data_monthly_sales_report') }}">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Item Sales</h5>
+                                <p class="card-text">Report of the most selling item</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -36,33 +41,6 @@
 @endsection
 @push('js')
 <script>
-    $(document).ready(function() {
-        getData();
-        $(document).on('click', '.pagination a', function(event) {
-            event.preventDefault();
-            var page = $(this).attr('href').split('page=')[1];
-            getData(page);
-        })
-    })
 
-    function getData(page) {
-        var name = $('#name').val();
-        $.ajax({
-            url: `/admin/report/data?name=` + name + `&page=` + page,
-            method: 'GET',
-            beforeSend: function(e) {
-                $('#overlay').css("display", "block");
-            },
-            success: function(data) {
-                $('#overlay').css("display", "none");
-                console.log(data);
-                $('#data').html(data);
-            },
-            error: function(error) {
-                $('#overlay').css("display", "none");
-                toastr['error']('Something Error');
-            }
-        })
-    }
 </script>
 @endpush

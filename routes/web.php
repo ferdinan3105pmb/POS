@@ -66,4 +66,11 @@ Route::middleware('admin')->group(function () {
         Route::post('/post', [PurchaseController::class, 'store'])->name('admin_post_purchase');
         Route::get('/detail/{id}', [PurchaseController::class, 'detail'])->name('admin_detail_purchase');
     });
+
+    Route::prefix('/admin/report')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('admin_report');
+        Route::get('/monthly-sales', [ReportController::class, 'monthlySales'])->name('admin_data_monthly_sales_report');
+        Route::get('/doughnut-chart', [ReportController::class, 'doughnutChart'])->name('doughnutChart');
+        Route::get('/item-sales-report', [ReportController::class, 'itemSalesReport'])->name('admin_data_monthly_sales_report');
+    });
 });

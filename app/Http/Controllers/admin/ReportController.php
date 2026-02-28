@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\admin\QuizRepositories;
 use App\Repositories\admin\ReportRepositories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ReportController extends Controller
 {
-    protected $report_r, $quiz_r;
+    protected $report_r;
 
     function __construct()
     {
         $this->report_r = new ReportRepositories;
-        $this->quiz_r = new QuizRepositories;
     }
     //
     function index(Request $request)
@@ -22,24 +21,35 @@ class ReportController extends Controller
         return view('admin/report/index');
     }
 
-    function data(Request $request)
+    function monthlySales()
     {
-        $data['quiz'] = $this->quiz_r->getQuiz($request);
-        return view('admin.report.data', $data);
+        return view('admin.report.monthly-sales');
     }
 
-    function dataReport(Request $request, $id)
+    function doughnutChart(Request $request)
     {
-        $data['id'] = $id;
-        return view('admin/report/view', $data);
+        $month = $request->month ?? Carbon::now()->format('Y-m');
+
+        $request->merge([
+            'month' => $month
+        ]);
+
+        $data = $this->report_r->doughnutChart($request);
+
+        return view('admin/report/doughnut-chart', $data);
     }
 
-    function dataReportDetail(Request $request, $id)
+    function itemSalesReport(Request $request)
     {
-        $data['reports'] = $this->report_r->getReport($request, $id);
-        $data['id'] = $id;
-        return view('admin.report.data-report', $data);
+        $month = $request->month ?? Carbon::now()->format('Y-m');
+
+        $request->merge([
+            'month' => $month
+        ]);
+
+        $data = $this->report_r->getitemSalesReport($request);
+
+
+        return $data;
     }
-
-
 }
