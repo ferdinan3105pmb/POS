@@ -52,4 +52,18 @@ class ReportController extends Controller
 
         return $data;
     }
+
+    function salesSummary(Request $request)
+    {
+        $month = $request->month ?? Carbon::now()->format('Y-m');
+
+        $request->merge([
+            'month' => $month
+        ]);
+
+        $data = $this->report_r->salesSummary($request);
+
+
+        return view('/admin/report/sales-summary', $data);
+    }
 }

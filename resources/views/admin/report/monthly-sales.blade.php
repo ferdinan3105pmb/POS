@@ -15,6 +15,11 @@
     <div class="row">
         <div class="container">
             <div class="row g-4">
+
+                <div class="col-md-12" id="sales-summary">
+
+                </div>
+                
                 <input id="month" onchange="getDoughnutChart()" style="border-color: white;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;" type="month" class="form-control mt-2" value="">
                 <div class="col-md-4 card h-100 shadow-sm" id="doughnut-chart">
                 </div>
@@ -26,6 +31,8 @@
                                 <thead>
                                     <tr>
                                         <th>Item</th>
+                                        <th>Size</th>
+                                        <th>Color</th>
                                         <th>Total Qty</th>
                                         <th>Total Sales</th>
                                     </tr>
@@ -35,6 +42,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -55,6 +63,7 @@
             success: function(data) {
                 $('#overlay').css("display", "none");
                 $('#doughnut-chart').html(data);
+                salesSummary();
                 loadTable();
             },
             error: function(error) {
@@ -68,25 +77,25 @@
         })
     }
 
-    // function getData() {
-    //     var month = $('#month').val();
-    //     $.ajax({
-    //         url: `/admin/report/item-sales-report?month=` + month,
-    //         method: 'GET',
-    //         beforeSend: function(e) {
-    //             $('#overlay').css("display", "block");
-    //         },
-    //         success: function(data) {
-    //             $('#overlay').css("display", "none");
-    //             console.log(data);
-    //             $('#data').html(data);
-    //         },
-    //         error: function(error) {
-    //             $('#overlay').css("display", "none");
-    //             toastr['error']('Something Error');
-    //         }
-    //     })
-    // }
+    function salesSummary() {
+        var month = $('#month').val();
+        $.ajax({
+            url: `/admin/report/sales-summary?month=` + month,
+            method: 'GET',
+            beforeSend: function(e) {
+                $('#overlay').css("display", "block");
+            },
+            success: function(data) {
+                $('#overlay').css("display", "none");
+                console.log(data);
+                $('#sales-summary').html(data);
+            },
+            error: function(error) {
+                $('#overlay').css("display", "none");
+                toastr['error']('Something Error');
+            }
+        })
+    }
 
     function loadTable(month) {
         $('#data').DataTable({
@@ -99,13 +108,28 @@
                     d.month = month;
                 }
             },
-            columns: [
-                {
+            columns: [{
                     data: 'item_name'
                 },
-                // {
-                //     data: 'item variant'
-                // },
+                {
+                    data: 'size',
+                    render: function(data) {
+                        const sizes = {
+                            1: 'S',
+                            2: 'M',
+                            3: 'L',
+                            4: 'XL',
+                            5: 'XXL',
+                            6: 'XXXL',
+                            7: 'XXXXL',
+                        };
+
+                        return sizes[data] ?? '-';
+                    }
+                },
+                {
+                    data: 'color'
+                },
                 {
                     data: 'total_qty'
                 },

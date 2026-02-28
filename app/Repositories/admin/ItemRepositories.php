@@ -128,7 +128,7 @@ class ItemRepositories
         DB::beginTransaction();
         try {
             $data = [
-                'color' => $request['color'],
+                'color' => strtolower($request['color']),
                 'size_id' => $request['size'],
                 'item_id' => $request['id'],
                 'stock' => $request['stock'],

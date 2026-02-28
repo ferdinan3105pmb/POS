@@ -72,5 +72,6 @@ Route::middleware('admin')->group(function () {
         Route::get('/monthly-sales', [ReportController::class, 'monthlySales'])->name('admin_data_monthly_sales_report');
         Route::get('/doughnut-chart', [ReportController::class, 'doughnutChart'])->name('doughnutChart');
         Route::get('/item-sales-report', [ReportController::class, 'itemSalesReport'])->name('admin_data_monthly_sales_report');
+        Route::get('/sales-summary', [ReportController::class, 'salesSummary'])->name('admin_data_monthly_sales_report');
     });
 });

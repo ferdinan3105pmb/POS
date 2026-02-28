@@ -9,29 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class ReportRepositories
 {
-    // function doughnutChart($request)
-    // {
-    //     $date = Carbon::createFromFormat('Y-m', $request);
-
-    //     $data = PurchaseModel::with('Detail.ItemVariant.Item')->whereYear('date', $date->year)
-    //         ->whereMonth('date', $date->month)->get();
-
-    //     $chart['labels'] = [];
-    //     $chart['data'] = [];
-
-    //     if (count($data) > 0) {
-    //         $grouped = $data
-    //             ->flatMap->Detail
-    //             ->groupBy(fn($detail) => $detail->ItemVariant->Item->name);
-
-    //         $chart['labels'] = $grouped->keys()->toArray();
-    //         $chart['data']   = $grouped->map->sum('qty')->values()->toArray();
-    //     }
-
-    //     return $chart;
-    // }
-
-
     function doughnutChart($request)
     {
         $date = Carbon::createFromFormat('Y-m', $request->month);
@@ -83,7 +60,9 @@ class ReportRepositories
             purchase_detail.item_variant_id,
             item.name as item_name, 
             SUM(qty) as total_qty,
-            SUM(qty * purchase_detail.price) as total_sales
+            SUM(qty * purchase_detail.price) as total_sales,
+            item_variant.size_id as size,
+            item_variant.color as color
         ')
             ->join('purchase', 'purchase_detail.purchase_id', '=', 'purchase.id')
             ->join('item_variant', 'purchase_detail.item_variant_id', '=', 'item_variant.id')
@@ -108,8 +87,10 @@ class ReportRepositories
             // Mapping kolom index ke nama kolom database
             $columns = [
                 0 => 'item.name',
-                1 => DB::raw('SUM(qty)'),
-                2 => DB::raw('SUM(qty * purchase_detail.price)'),
+                1 => 'item_variant.size_id',
+                2 => 'item_variant.color',
+                3 => DB::raw('SUM(qty)'),
+                4 => DB::raw('SUM(qty * purchase_detail.price)'),
             ];
 
             if (isset($columns[$columnIndex])) {
@@ -135,5 +116,24 @@ class ReportRepositories
             "recordsFiltered" => $totalRecords,
             "data" => $data
         ]);
+    }
+
+    function salesSummary($request)
+    {
+        $date = Carbon::createFromFormat('Y-m', $request->month);
+
+        $totalDetail = PurchaseDetailModel::whereHas('purchase', function ($query) use ($date) {
+            $query->whereYear('date', $date->year)
+                ->whereMonth('date', $date->month);
+        })->count();
+
+        $totalSales = PurchaseDetailModel::whereYear('created_at', $date->year)
+            ->whereMonth('created_at', $date->month)->SUM(DB::raw('qty * price'));
+
+
+        $data['total_sales'] = $totalSales;
+        $data['total_detail'] = $totalDetail;
+
+        return $data;
     }
 }
