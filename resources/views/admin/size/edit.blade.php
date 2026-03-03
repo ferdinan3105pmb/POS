@@ -3,9 +3,9 @@
 <div class="pagetitle mt-4 d-md-block d-none" style="margin-left:30px">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{ url('/admin/item_type') }}">Item Type</a>
+            <a href="{{ url('/admin/size') }}">Size</a>
         </li>
-        <li class="breadcrumb-item active">Edit Item Type</li>
+        <li class="breadcrumb-item active">Edit Size</li>
     </ol>
 </div>
 @endsection
@@ -17,11 +17,11 @@
             <div class="card-body mt-4 px-4">
                 <form id="formData" method="POST" class="row g-3" enctype="multipart/form-data" autocomplete="off">
                     @csrf
-                    <input type="hidden" name="id" value="{{$type->id}}">
+                    <input type="hidden" name="id" value="{{$size->id}}">
 
                     <div class="col-md-12">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off" value="{{$type->name}}">
+                        <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off" value="{{$size->name}}">
                     </div>
 
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -64,7 +64,7 @@
             var token = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
-                url: "{{ route('admin_update_item_type') }}",
+                url: "{{ route('admin_update_size') }}",
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': token
@@ -76,11 +76,11 @@
                 success: function(res) {
                     $('.spinner-border').hide();
                     if (res.status) {
-                        swal("Success", "Item Type Berhasil Diubah!", "success", {
+                        swal("Success", "Size Berhasil Diubah!", "success", {
                             buttons: false,
                             timer: 2000,
                         }).then((value) => {
-                            var redirect_url = "{{ route('admin_item_type') }}"
+                            var redirect_url = "{{ route('admin_size') }}"
                             window.location.href = redirect_url;
                         });
                     } else {

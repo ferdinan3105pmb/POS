@@ -72,13 +72,16 @@ class ItemTypeRepositories
 
     function editItemType($request)
     {
+        $outlet_id = getAuth();
         DB::beginTransaction();
         try {
             $data = [
                 'name' => $request['name'],
             ];
 
-            ItemTypeModel::where('id', $request['id'])->update($data);
+            $type = ItemTypeModel::where('id', $request['id'])->where('outlet_id', $outlet_id)->firstOrFail();
+            checkOutlet($type->outlet_id);
+            $type->update($data);
 
             DB::commit();
             $message = [
@@ -100,8 +103,9 @@ class ItemTypeRepositories
         $outlet_id = getAuth();
         DB::beginTransaction();
         try {
-            $data = ItemTypeModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
-            $data->delete();
+            $type = ItemTypeModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
+            checkOutlet($type->outlet_id);
+            $type->delete();
 
             DB::commit();
             $message = [

@@ -3,9 +3,9 @@
 <div class="pagetitle mt-4 d-md-block d-none" style="margin-left:30px">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{ url('/admin/item_type') }}">Item Type</a>
+            <a href="{{ url('/admin/size') }}">Size</a>
         </li>
-        <li class="breadcrumb-item active">Edit Item Type</li>
+        <li class="breadcrumb-item active">Add New</li>
     </ol>
 </div>
 @endsection
@@ -13,15 +13,13 @@
 @section('content')
 <section class="section dashboard">
     <div class="col-md-12">
-        <div class="card mt-4">
+        <div class="card">
             <div class="card-body mt-4 px-4">
                 <form id="formData" method="POST" class="row g-3" enctype="multipart/form-data" autocomplete="off">
                     @csrf
-                    <input type="hidden" name="id" value="{{$type->id}}">
-
                     <div class="col-md-12">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off" value="{{$type->name}}">
+                        <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off">
                     </div>
 
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -35,7 +33,7 @@
                                 Submit</button>
                         </div>
                         <div class="mx-2">
-                            <a href="{{ route('admin_item_type') }}" class="btn-cancel px-4 btn btn-sm rounded-pill float-right ml-3">
+                            <a href="{{ route('admin_user') }}" class="btn-cancel px-4 btn btn-sm rounded-pill float-right ml-3">
                                 Cancel</a>
                         </div>
                     </div>
@@ -43,7 +41,6 @@
             </div>
         </div>
     </div>
-
 </section>
 @endsection
 @push('css')
@@ -52,7 +49,6 @@
 <script>
     $(document).ready(function() {
         $('#formData').on('submit', function(e) {
-            e.preventDefault();
             $('.spinner-border').show();
             $(".submit").prop('disabled', true);
             e.preventDefault();
@@ -61,14 +57,10 @@
             });
 
             var formData = new FormData(this);
-            var token = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
-                url: "{{ route('admin_update_item_type') }}",
+                url: "{{ route('admin_post_size') }}",
                 type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': token
-                },
                 data: formData,
                 cache: false,
                 contentType: false,
@@ -76,11 +68,11 @@
                 success: function(res) {
                     $('.spinner-border').hide();
                     if (res.status) {
-                        swal("Success", "Item Type Berhasil Diubah!", "success", {
+                        swal("Success", "Size Berhasil Di Tambahkan!", "success", {
                             buttons: false,
                             timer: 2000,
                         }).then((value) => {
-                            var redirect_url = "{{ route('admin_item_type') }}"
+                            var redirect_url = "{{ route('admin_size') }}"
                             window.location.href = redirect_url;
                         });
                     } else {

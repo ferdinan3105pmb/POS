@@ -2,12 +2,10 @@
 
 namespace App\Repositories\admin;
 
-use App\Models\StaffModel;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SizeModel;
 use Illuminate\Support\Facades\DB;
 
-class AdminRepositories
+class SizeRepositories
 {
     function getRequestFilter($data, $request)
     {
@@ -18,40 +16,40 @@ class AdminRepositories
         return $data;
     }
 
-    function getStaff($request)
+    function getSize($request)
     {
-        $outlet_id = Auth::guard('admin')->user()->outlet_id;
-        $data = StaffModel::where('outlet_id', $outlet_id)->orderByDesc('id');
+        $outlet_id = getAuth();
+        $data = SizeModel::where('outlet_id', $outlet_id)->orderByDesc('id');
         $data = $this->getRequestFilter($data, $request);
         $result = $data->paginate(10);
         return $result;
     }
 
-    function getStaffById($id)
+    function getSizeByOutletId()
     {
-        $staff = StaffModel::where('id', $id)->firstOrFail();
-        checkOutlet($staff->outlet_id);
-        return $staff;
+        $outlet_id = getAuth();
+        $type = SizeModel::where('outlet_id', $outlet_id)->get();
+        return $type;
     }
 
-    function getAllStaff()
+    function getSizeById($id)
     {
-        $data = StaffModel::get();
-        return $data;
+        $outlet_id = getAuth();
+        $item = SizeModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
+        return $item;
     }
 
-    function addStaff($request)
+    function addSize($request)
     {
-        $outlet_id = Auth::guard('admin')->user()->outlet_id;
+        $outlet_id = getAuth();
         DB::beginTransaction();
         try {
             $data = [
-                'email' => $request['email'],
-                'password' => bcrypt($request['password']),
+                'name' => $request['name'],
                 'outlet_id' => $outlet_id,
             ];
 
-            $insert = StaffModel::create($data);
+            $insert = SizeModel::create($data);
 
             DB::commit();
             $message = [
@@ -69,15 +67,18 @@ class AdminRepositories
     }
 
 
-    function editStaff($request)
+    function editSize($request)
     {
+        $outlet_id = getAuth();
         DB::beginTransaction();
         try {
             $data = [
-                'email' => $request['email'],
+                'name' => $request['name'],
             ];
 
-            StaffModel::where('id', $request['id'])->update($data);
+            $size = SizeModel::where('id', $request['id'])->where('outlet_id', $outlet_id)->firstOrFail();
+            checkOutlet($size->outlet_id);
+            $size->update($data);
 
             DB::commit();
             $message = [
@@ -94,40 +95,14 @@ class AdminRepositories
         return $message;
     }
 
-    function editPassword($request)
+    function deleteSize($id)
     {
+        $outlet_id = getAuth();
         DB::beginTransaction();
         try {
-            $data = [
-                'password' => bcrypt($request['password']),
-            ];
-
-            $staff = StaffModel::where('id', $request['id'])->firstOrFail();
-            checkOutlet($staff->outlet_id);
-            $staff->update($data);
-
-            DB::commit();
-            $message = [
-                'status' => true,
-                'data' => null,
-            ];
-        } catch (\Exception $exception) {
-            DB::rollback();
-            $message = [
-                'status' => false,
-                'message' => $exception->getMessage(),
-            ];
-        }
-        return $message;
-    }
-
-    function deleteStaff($id)
-    {
-        DB::beginTransaction();
-        try {
-            $staff = StaffModel::where('id', $id)->firstOrFail();
-            checkOutlet($staff->outlet_id);
-            $staff->delete();
+            $size = SizeModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
+            checkOutlet($size->outlet_id);
+            $size->delete();
 
             DB::commit();
             $message = [

@@ -27,16 +27,21 @@ class MenuSeeder extends Seeder
             ],
             [
                 'id' => 3,
+                'name' => 'Size',
+                'route' => '/admin/size',
+            ],
+            [
+                'id' => 4,
                 'name' => 'Item',
                 'route' => '/admin/item',
             ],
             [
-                'id' => 4,
+                'id' => 5,
                 'name' => 'Purchase',
                 'route' => '/admin/purchase',
             ],
             [
-                'id' => 5,
+                'id' => 6,
                 'name' => 'Report',
                 'route' => '/admin/report',
             ],

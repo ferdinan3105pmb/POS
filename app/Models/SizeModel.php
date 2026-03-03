@@ -10,6 +10,7 @@ class SizeModel extends Model
 
     protected $fillable = [
         'name',
+        'outlet_id',
         'created_at',
     ];
 }

@@ -78,10 +78,11 @@ class ItemRepositories
             $data = [
                 'email' => $request['email'],
             ];
-            $data = ItemModel::where('id', $request->id)->where('outlet_id', $outlet_id)->firstOrFail();
-            checkOutlet($data->outlet_id);
 
-            ItemModel::where('id', $request['id'])->update($data);
+            $item = ItemModel::where('id', $request['id'])->where('outlet_id', $outlet_id)->firstOrFail();
+            checkOutlet($item->outlet_id);
+
+            $item->update($data);
 
             DB::commit();
             $message = [
@@ -103,9 +104,9 @@ class ItemRepositories
         $outlet_id = getAuth();
         DB::beginTransaction();
         try {
-            $data = ItemModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
-            checkOutlet($data->outlet_id);
-            $data->delete();
+            $item = ItemModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
+            checkOutlet($item->outlet_id);
+            $item->delete();
 
             DB::commit();
             $message = [

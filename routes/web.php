@@ -6,14 +6,9 @@ use App\Http\Controllers\admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ItemTypeController;
 use App\Http\Controllers\Admin\PurchaseController;
-use App\Http\Controllers\admin\QuizController as AdminQuizController;
 use App\Http\Controllers\admin\ReportController;
+use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\admin\UserController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\QuizController;
-use App\Models\ItemModel;
-use App\Models\ItemVariantModel;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdminIndexController::class, 'outlet_page'])->name('outlet_login');
@@ -51,6 +46,16 @@ Route::middleware('admin')->group(function () {
         Route::get('/edit/{id}', [ItemTypeController::class, 'edit'])->name('admin_edit_item_type');
         Route::post('/update', [ItemTypeController::class, 'update'])->name('admin_update_item_type');
         Route::delete('/delete/{id}', [ItemTypeController::class, 'delete'])->name('admin_delete_item_type');
+    });
+
+    Route::prefix('/admin/size')->group(function () {
+        Route::get('/', [SizeController::class, 'index'])->name('admin_size');
+        Route::get('/data', [SizeController::class, 'data'])->name('admin_data_size');
+        Route::get('/add', [SizeController::class, 'add'])->name('admin_add_size');
+        Route::post('/post', [SizeController::class, 'store'])->name('admin_post_size');
+        Route::get('/edit/{id}', [SizeController::class, 'edit'])->name('admin_edit_size');
+        Route::post('/update', [SizeController::class, 'update'])->name('admin_update_size');
+        Route::delete('/delete/{id}', [SizeController::class, 'delete'])->name('admin_delete_size');
     });
 
     Route::prefix('/admin/item')->group(function () {
