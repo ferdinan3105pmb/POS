@@ -64,7 +64,7 @@
                 $('#overlay').css("display", "none");
                 $('#doughnut-chart').html(data);
                 salesSummary();
-                loadTable();
+                loadTable(month);
             },
             error: function(error) {
                 if (fromAbort) {

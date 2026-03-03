@@ -11,9 +11,10 @@ class ReportRepositories
 {
     function doughnutChart($request)
     {
+        $outlet_id = getAuth();
         $date = Carbon::createFromFormat('Y-m', $request->month);
 
-        $data = PurchaseModel::with('Detail.ItemVariant.Item')->whereYear('date', $date->year)
+        $data = PurchaseModel::with('Detail.ItemVariant.Item')->where('outlet_id', $outlet_id)->whereYear('date', $date->year)
             ->whereMonth('date', $date->month)->get();
 
         $chart['labels'] = [];
@@ -54,6 +55,7 @@ class ReportRepositories
     function getitemSalesReport($request)
     {
         // dd($request);
+        $outlet_id = getAuth();
         $date = Carbon::createFromFormat('Y-m', $request->month);
 
         $query = PurchaseDetailModel::selectRaw('
@@ -65,6 +67,7 @@ class ReportRepositories
             item_variant.color as color
         ')
             ->join('purchase', 'purchase_detail.purchase_id', '=', 'purchase.id')
+            ->where('purchase.outlet_id', '=' , $outlet_id)
             ->join('item_variant', 'purchase_detail.item_variant_id', '=', 'item_variant.id')
             ->join('item', 'item_variant.item_id', '=', 'item.id')
             ->whereYear('purchase.date', $date->year)
@@ -108,7 +111,7 @@ class ReportRepositories
                 ->limit($request->length);
         }
         // Pagination
-        $data = $query->get();
+        $data = $query->get();        
 
         return response()->json([
             "draw" => intval($request->draw),
@@ -120,14 +123,25 @@ class ReportRepositories
 
     function salesSummary($request)
     {
+        $outlet_id = getAuth();
         $date = Carbon::createFromFormat('Y-m', $request->month);
 
-        $totalDetail = PurchaseDetailModel::whereHas('purchase', function ($query) use ($date) {
+        $totalDetail = PurchaseDetailModel::whereHas('purchase', function ($query) use ($date, $outlet_id) {
             $query->whereYear('date', $date->year)
-                ->whereMonth('date', $date->month);
+                ->whereMonth('date', $date->month)
+                ->where('outlet_id', $outlet_id);
         })->count();
 
-        $totalSales = PurchaseDetailModel::whereYear('created_at', $date->year)
+        //with join faster
+        // $totalDetail = PurchaseDetailModel::join('purchase', 'purchase_detail.purchase_id', '=', 'purchase.id')
+        //     ->whereYear('purchase.date', $date->year)
+        //     ->whereMonth('purchase.date', $date->month)
+        //     ->where('purchase.outlet_id', $outlet_id)
+        //     ->count();
+
+        $totalSales = PurchaseDetailModel::whereHas('purchase', function ($query) use ($outlet_id) {
+            $query->where('outlet_id', $outlet_id);
+        })->whereYear('created_at', $date->year)
             ->whereMonth('created_at', $date->month)->SUM(DB::raw('qty * price'));
 
 
