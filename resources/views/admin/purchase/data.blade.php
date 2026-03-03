@@ -1,3 +1,4 @@
+<h3 class="my-2">Total Salses {{format_idr($total_sales)}}</h3>
 <table class="table table-borderless table-hover my-2">
     <thead>
         <tr class="p-1 border">

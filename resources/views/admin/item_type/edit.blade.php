@@ -3,9 +3,9 @@
 <div class="pagetitle mt-4 d-md-block d-none" style="margin-left:30px">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{ url('/admin/user') }}">User</a>
+            <a href="{{ url('/admin/item_type') }}">Item Type</a>
         </li>
-        <li class="breadcrumb-item active">Add New</li>
+        <li class="breadcrumb-item active">Edit Item Type</li>
     </ol>
 </div>
 @endsection
@@ -13,23 +13,15 @@
 @section('content')
 <section class="section dashboard">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card mt-4">
             <div class="card-body mt-4 px-4">
                 <form id="formData" method="POST" class="row g-3" enctype="multipart/form-data" autocomplete="off">
                     @csrf
+                    <input type="hidden" name="id" value="{{$type->id}}">
+
                     <div class="col-md-12">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off">
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" name="email" class="form-control mb-2" id="email" required autocomplete="off">
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control mb-2" id="password" required autocomplete="off">
+                        <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off" value="{{$type->name}}">
                     </div>
 
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -43,7 +35,7 @@
                                 Submit</button>
                         </div>
                         <div class="mx-2">
-                            <a href="{{ route('admin_user') }}" class="btn-cancel px-4 btn btn-sm rounded-pill float-right ml-3">
+                            <a href="{{ route('admin_item_type') }}" class="btn-cancel px-4 btn btn-sm rounded-pill float-right ml-3">
                                 Cancel</a>
                         </div>
                     </div>
@@ -51,6 +43,7 @@
             </div>
         </div>
     </div>
+
 </section>
 @endsection
 @push('css')
@@ -59,6 +52,7 @@
 <script>
     $(document).ready(function() {
         $('#formData').on('submit', function(e) {
+            e.preventDefault();
             $('.spinner-border').show();
             $(".submit").prop('disabled', true);
             e.preventDefault();
@@ -67,10 +61,14 @@
             });
 
             var formData = new FormData(this);
+            var token = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
-                url: "{{ route('admin_post_user') }}",
+                url: "{{ route('admin_update_item_type') }}",
                 type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': token
+                },
                 data: formData,
                 cache: false,
                 contentType: false,
@@ -78,11 +76,11 @@
                 success: function(res) {
                     $('.spinner-border').hide();
                     if (res.status) {
-                        swal("Success", "User Berhasil Di Tambahkan!", "success", {
+                        swal("Success", "Item Type Berhasil Diubah!", "success", {
                             buttons: false,
                             timer: 2000,
                         }).then((value) => {
-                            var redirect_url = "{{ route('admin_user') }}"
+                            var redirect_url = "{{ route('admin_item_type') }}"
                             window.location.href = redirect_url;
                         });
                     } else {
@@ -95,6 +93,53 @@
                     if (res.status != 422)
                         toastr['error']("Something went wrong");
                     showError(res.responseJSON.errors, "#formData");
+                }
+            });
+            return false;
+        })
+
+
+        $('#formPassword').on('submit', function(e) {
+            e.preventDefault();
+            $('.spinner-border').show();
+            $(".submit").prop('disabled', true);
+            e.preventDefault();
+            $('.is-invalid').each(function() {
+                $('.is-invalid').removeClass('is-invalid');
+            });
+
+            var formData = new FormData(this);
+            var token = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                url: "{{ route('admin_password_user') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': token
+                },
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    $('.spinner-border').hide();
+                    $('#changeUserPasswordModal').modal('hide');
+
+                    if (res.status) {
+                        swal("Success", "Password User Berhasil Diubah!", "success", {
+                            buttons: false,
+                            timer: 2000,
+                        })
+                    } else {
+                        toastr['error'](res.error);
+                    }
+                },
+                error: function(res) {
+                    $('.spinner-border').hide();
+                    $(".submit").prop('disabled', false);
+                    if (res.status != 422)
+                        toastr['error']("Something went wrong");
+                    showError(res.responseJSON.errors, "#formPassword");
                 }
             });
             return false;

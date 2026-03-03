@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             // MenuSeeder::class,
             // AdminSeeder::class,
             // SizeSeeder::class,           
+            // OutletSeeder::class,
+            NewOutletSeeder::class,
         ]);
     }
 }

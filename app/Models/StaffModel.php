@@ -15,6 +15,7 @@ class StaffModel extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'outlet_id',
         'created_at',
     ];
 

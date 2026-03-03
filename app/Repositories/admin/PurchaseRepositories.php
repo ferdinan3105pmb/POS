@@ -20,9 +20,20 @@ class PurchaseRepositories
         return $data;
     }
 
+    function getTotalSalesToday($request)
+    {
+        $outlet_id = getAuth();
+        $data = PurchaseModel::where('outlet_id', $outlet_id);
+        $data = $this->getRequestFilter($data, $request);
+
+        $result = $data->SUM(DB::raw('total'));
+        return $result;
+    }
+
     function getPurchase($request)
     {
-        $data = PurchaseModel::orderByDesc('id');
+        $outlet_id = getAuth();
+        $data = PurchaseModel::where('outlet_id', $outlet_id)->orderByDesc('id');
         $data = $this->getRequestFilter($data, $request);
         $result = $data->paginate(10);
         return $result;
@@ -34,20 +45,9 @@ class PurchaseRepositories
         return $data;
     }
 
-    function getPurchaseById($id)
-    {
-        $staff = PurchaseModel::where('id', $id)->firstOrFail();
-        return $staff;
-    }
-
-    function getAllPurchase()
-    {
-        $data = PurchaseModel::get();
-        return $data;
-    }
-
     function addPurchase($request)
     {
+        $staff = Auth::guard('admin')->user();
         DB::beginTransaction();
         try {
 
@@ -59,9 +59,10 @@ class PurchaseRepositories
 
             $data = [
                 'date' => Carbon::now(),
-                'staff_id' => Auth::guard('admin')->user()->id,
+                'staff_id' => $staff->id,
                 'item_type_id' => $request['type_id'],
                 'total' => $total,
+                'outlet_id' => $staff->outlet_id,
             ];
 
             $insert = PurchaseModel::create($data);

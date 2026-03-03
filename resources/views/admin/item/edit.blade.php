@@ -46,7 +46,7 @@
                                 Submit</button>
                         </div>
                         <div class="mx-2">
-                            <a href="{{ route('admin_user') }}" class="btn-cancel px-4 btn btn-sm rounded-pill float-right ml-3">
+                            <a href="{{ route('admin_item') }}" class="btn-cancel px-4 btn btn-sm rounded-pill float-right ml-3">
                                 Cancel</a>
                         </div>
                     </div>

@@ -50,20 +50,14 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <form class="row g-3 needs-validation user frm-login" action="/admin/login" method="POST" novalidate>
+                                    <form class="row g-3 needs-validation user frm-login" action="/outlet/login" method="POST" novalidate>
                                         @csrf
-                                        <input type="hidden" name="outlet_id" value="{{$outlet->id}}">
                                         <div class="col-12">
-                                            <label for="yourUsername" class="form-label">Username</label>
+                                            <label for="yourUsername" class="form-label">Outlet Email</label>
                                             <div class="input-group has-validation">
                                                 <input type="text" name="email" class="form-control" id="email" required>
-                                                <div class="invalid-feedback">Please enter your username.</div>
+                                                <div class="invalid-feedback">Please enter your outlet email.</div>
                                             </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <label for="yourPassword" class="form-label">Password</label>
-                                            <input type="password" name="password" class="form-control" id="password" required>
-                                            <div class="invalid-feedback">Please enter your password!</div>
                                         </div>
                                         <div class="col-12">
                                             <button class="btn btn-primary w-100" type="submit" style="background-color:#4C3D3D;border-color:#4C3D3D">Login</button>

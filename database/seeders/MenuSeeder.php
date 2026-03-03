@@ -22,13 +22,23 @@ class MenuSeeder extends Seeder
             ],
             [
                 'id' => 2,
+                'name' => 'Item Type',
+                'route' => '/admin/item-type',
+            ],
+            [
+                'id' => 3,
                 'name' => 'Item',
                 'route' => '/admin/item',
             ],
             [
-                'id' => 3,
+                'id' => 4,
                 'name' => 'Purchase',
                 'route' => '/admin/purchase',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Report',
+                'route' => '/admin/report',
             ],
         ]);
     }

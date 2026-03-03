@@ -13,6 +13,7 @@ class PurchaseModel extends Model
     protected $fillable = [
         'date',
         'staff_id',
+        'outlet_id',
         'total',
         'created_at',
     ];

@@ -10,14 +10,17 @@ use App\Models\SizeModel;
 use Illuminate\Http\Request;
 use App\Repositories\admin\ItemRepositories;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\admin\ItemTypeRepositories;
 
 class ItemController extends Controller
 {
-    protected $item_r;
+    protected $item_r, $itemT_r;
 
     function __construct()
     {
         $this->item_r  = new ItemRepositories;
+        $this->itemT_r  = new ItemTypeRepositories;
     }
 
     function index(Request $request)
@@ -33,7 +36,8 @@ class ItemController extends Controller
 
     function add()
     {
-        $data['types'] = ItemTypeModel::get();
+        $outlet_id = getAuth();
+        $data['types'] = $this->itemT_r->getItemTypeByOutletId($outlet_id);
         return view('admin.item.add', $data);
     }
 
@@ -45,7 +49,8 @@ class ItemController extends Controller
 
     function edit($id)
     {
-        $data['types'] = ItemTypeModel::get();
+        $outlet_id = getAuth();
+        $data['types'] = $this->itemT_r->getItemTypeByOutletId($outlet_id);
         $data['sizes'] = SizeModel::get();
         $data['item'] = $this->item_r->getItemById($id);
 

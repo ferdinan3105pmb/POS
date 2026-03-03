@@ -12,8 +12,16 @@ class IndexController extends Controller
         return view('admin/dashboard/index');
     }
 
+    function outlet_page(Request $request)
+    {
+        return view('admin/outlet');
+    }
+
     function login_page(Request $request)
     {
+        if (empty($request->outlet_id)) {
+            return redirect()->route('outlet_login');
+        }
         return view('admin/index');
     }
 }

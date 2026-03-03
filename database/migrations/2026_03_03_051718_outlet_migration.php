@@ -11,19 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_variant', function (Blueprint $table) {
+        Schema::create('outlet', function (Blueprint $table) {
             $table->id();
-            $table->string('color', 45)->nullable();
-            $table->integer('price');
-            $table->unsignedBigInteger('item_id');
-            $table->unsignedBigInteger('size_id')->nullable();
-            $table->integer('stock');
+            $table->string('name', 255);
+            $table->text('email');
             $table->timestamp('created_at');
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
-
-            $table->foreign('item_id')->references('id')->on('item');
-            $table->foreign('size_id')->references('id')->on('size');
         });
     }
 

@@ -3,7 +3,7 @@
 <div class="pagetitle mt-4 d-md-block d-none" style="margin-left:30px">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="{{ url('/admin/user') }}">User</a>
+            <a href="{{ url('/admin/item-type') }}">Item Type</a>
         </li>
         <li class="breadcrumb-item active">Add New</li>
     </ol>
@@ -20,16 +20,6 @@
                     <div class="col-md-12">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" name="name" class="form-control mb-2" id="name" required autocomplete="off">
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" name="email" class="form-control mb-2" id="email" required autocomplete="off">
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control mb-2" id="password" required autocomplete="off">
                     </div>
 
                     <div class="mb-3" style="display: flex; justify-content: flex-end;">
@@ -69,7 +59,7 @@
             var formData = new FormData(this);
 
             $.ajax({
-                url: "{{ route('admin_post_user') }}",
+                url: "{{ route('admin_post_item_type') }}",
                 type: "POST",
                 data: formData,
                 cache: false,
@@ -78,11 +68,11 @@
                 success: function(res) {
                     $('.spinner-border').hide();
                     if (res.status) {
-                        swal("Success", "User Berhasil Di Tambahkan!", "success", {
+                        swal("Success", "Item Type Berhasil Di Tambahkan!", "success", {
                             buttons: false,
                             timer: 2000,
                         }).then((value) => {
-                            var redirect_url = "{{ route('admin_user') }}"
+                            var redirect_url = "{{ route('admin_item_type') }}"
                             window.location.href = redirect_url;
                         });
                     } else {

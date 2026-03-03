@@ -2,12 +2,13 @@
 
 namespace App\Repositories\admin;
 
-use App\Models\StaffModel;
-use App\Models\User;
+use App\Models\ItemModel;
+use App\Models\ItemTypeModel;
+use App\Models\ItemVariantModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class AdminRepositories
+class ItemTypeRepositories
 {
     function getRequestFilter($data, $request)
     {
@@ -18,40 +19,40 @@ class AdminRepositories
         return $data;
     }
 
-    function getStaff($request)
+    function getItemType($request)
     {
-        $outlet_id = Auth::guard('admin')->user()->outlet_id;
-        $data = StaffModel::where('outlet_id', $outlet_id)->orderByDesc('id');
+        $outlet_id = getAuth();
+        $data = ItemTypeModel::where('outlet_id', $outlet_id)->orderByDesc('id');
         $data = $this->getRequestFilter($data, $request);
         $result = $data->paginate(10);
         return $result;
     }
 
-    function getStaffById($id)
+    function getItemTypeByOutletId()
     {
-        $staff = StaffModel::where('id', $id)->firstOrFail();
-        checkOutlet($staff->outlet_id);
-        return $staff;
+        $outlet_id = getAuth();
+        $type = ItemTypeModel::where('outlet_id', $outlet_id)->get();
+        return $type;
     }
 
-    function getAllStaff()
+    function getItemTypeById($id)
     {
-        $data = StaffModel::get();
-        return $data;
+        $outlet_id = getAuth();
+        $item = ItemTypeModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
+        return $item;
     }
 
-    function addStaff($request)
+    function addItemType($request)
     {
-        $outlet_id = Auth::guard('admin')->user()->outlet_id;
+        $outlet_id = getAuth();
         DB::beginTransaction();
         try {
             $data = [
-                'email' => $request['email'],
-                'password' => bcrypt($request['password']),
+                'name' => $request['name'],
                 'outlet_id' => $outlet_id,
             ];
 
-            $insert = User::create($data);
+            $insert = ItemTypeModel::create($data);
 
             DB::commit();
             $message = [
@@ -69,15 +70,15 @@ class AdminRepositories
     }
 
 
-    function editStaff($request)
+    function editItemType($request)
     {
         DB::beginTransaction();
         try {
             $data = [
-                'email' => $request['email'],
+                'name' => $request['name'],
             ];
 
-            User::where('id', $request['id'])->update($data);
+            ItemTypeModel::where('id', $request['id'])->update($data);
 
             DB::commit();
             $message = [
@@ -94,38 +95,12 @@ class AdminRepositories
         return $message;
     }
 
-    function editPassword($request)
+    function deleteItemType($id)
     {
+        $outlet_id = getAuth();
         DB::beginTransaction();
         try {
-            $data = [
-                'password' => bcrypt($request['password']),
-            ];
-
-            $user = User::where('id', $request['id'])->firstOrFail();
-            $user->update($data);
-
-            DB::commit();
-            $message = [
-                'status' => true,
-                'data' => null,
-            ];
-        } catch (\Exception $exception) {
-            DB::rollback();
-            $message = [
-                'status' => false,
-                'message' => $exception->getMessage(),
-            ];
-        }
-        return $message;
-    }
-
-    function deleteStaff($id)
-    {
-        DB::beginTransaction();
-        try {
-            $data = StaffModel::where('id', $id)->firstOrFail();
-            checkOutlet($data->outlet_id);
+            $data = ItemTypeModel::where('id', $id)->where('outlet_id', $outlet_id)->firstOrFail();
             $data->delete();
 
             DB::commit();

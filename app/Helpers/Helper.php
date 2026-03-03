@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\MenuModel;
+use Illuminate\Support\Facades\Auth;
 
 function getMenus()
 {
@@ -28,4 +29,20 @@ function Size($id)
     ];
 
     return $sizes[$id] ?? null;
+}
+
+function checkOutlet($outlet_id) {
+    $admin = Auth::guard('admin')->user();
+
+    if($admin->outlet_id != $outlet_id){
+        abort(403, "Unauthorized");
+    }
+
+    return;
+}
+
+function getAuth(){
+    $outlet_id = Auth::guard('admin')->user()->outlet_id;
+
+    return $outlet_id;
 }

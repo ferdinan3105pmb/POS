@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ItemTypeModel extends Model
+class OutletModel extends Model
 {
-    protected $table = 'item_type';
+    protected $table = 'outlet';
 
     protected $fillable = [
         'name',
-        'outlet_id',
+        'email',
         'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 }

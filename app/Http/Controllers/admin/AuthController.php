@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OutletModel;
 use App\Models\StaffModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,9 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        if(empty($request->outlet_id)){
+            return redirect()->route('outlet_login')->with('login_message', 'Login gagal. Masukan email yang benar');
+        }
         $credentials = $request->only('email', 'password');
 
         $user = StaffModel::where('email', $credentials['email'])->first();
@@ -32,9 +36,22 @@ class AuthController extends Controller
         }
     }
 
+    public function outlet_login(Request $request)
+    {
+        $data['outlet'] = OutletModel::where('email', $request->email)->first();
+
+        if(!empty($data['outlet'])){
+            return view('admin/index', $data);
+        }else{
+            return redirect()->route('outlet_login')->with('login_message', 'Login gagal. Masukan email yang benar');
+        }
+
+
+    }
+
     public function logout()
     {
         Auth::guard('admin')->logout();
-        return redirect()->route('admin_login')->with('logout', 'Logout Berhasil');
+        return redirect()->route('outlet_login')->with('logout', 'Logout Berhasil');
     }
 }
