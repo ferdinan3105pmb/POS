@@ -15,12 +15,12 @@
     <div class="row">
         <div class="container">
             <div class="row g-4">
+                <input id="month" onchange="getDoughnutChart()" style="border-color: white;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;" type="month" class="form-control mt-2" value="">
 
                 <div class="col-md-12" id="sales-summary">
 
                 </div>
-                
-                <input id="month" onchange="getDoughnutChart()" style="border-color: white;-webkit-box-shadow: none!important;-moz-box-shadow: none!important;box-shadow: none!important;" type="month" class="form-control mt-2" value="">
+
                 <div class="col-md-4 card h-100 shadow-sm" id="doughnut-chart">
                 </div>
 

@@ -19,7 +19,7 @@ class IndexController extends Controller
 
     function login_page(Request $request)
     {
-        if (empty($request->outlet_id)) {
+        if (!session()->has('outlet_id')) {
             return redirect()->route('outlet_login');
         }
         return view('admin/index');

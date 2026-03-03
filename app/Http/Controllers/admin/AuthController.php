@@ -22,12 +22,22 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        if(empty($request->outlet_id)){
+        if (empty($request->outlet_id)) {
             return redirect()->route('outlet_login')->with('login_message', 'Login gagal. Masukan email yang benar');
         }
         $credentials = $request->only('email', 'password');
 
-        $user = StaffModel::where('email', $credentials['email'])->first();
+        $user = StaffModel::where('email', $request->email)
+            ->where('outlet_id', $request->outlet_id)
+            ->first();
+
+        // dd($user);
+        if (empty($user)) {
+            return redirect()
+                ->route('admin_login')
+                ->with('login_message', 'Login gagal. Periksa kembali username dan password anda')
+                ->withInput();
+        }
 
         if (Auth::guard('admin')->attempt($credentials)) {
             return redirect()->route('admin_dashboard');
@@ -40,17 +50,18 @@ class AuthController extends Controller
     {
         $data['outlet'] = OutletModel::where('email', $request->email)->first();
 
-        if(!empty($data['outlet'])){
+        if (!empty($data['outlet'])) {
+            session(['outlet_id' => $data['outlet']['id']]);
             return view('admin/index', $data);
-        }else{
+        } else {
             return redirect()->route('outlet_login')->with('login_message', 'Login gagal. Masukan email yang benar');
         }
-
-
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         Auth::guard('admin')->logout();
         return redirect()->route('outlet_login')->with('logout', 'Logout Berhasil');
     }

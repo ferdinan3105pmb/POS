@@ -52,7 +52,8 @@
                                     </div>
                                     <form class="row g-3 needs-validation user frm-login" action="/admin/login" method="POST" novalidate>
                                         @csrf
-                                        <input type="hidden" name="outlet_id" value="{{$outlet->id}}">
+                                        <input type="hidden" name="outlet_id"
+                                            value="{{ $outlet?->id ?? old('outlet_id') }}">
                                         <div class="col-12">
                                             <label for="yourUsername" class="form-label">Username</label>
                                             <div class="input-group has-validation">
